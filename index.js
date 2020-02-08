@@ -1,4 +1,6 @@
-exports.name = 'validator';
-exports.fn = () => {
-  console.log('Hello world');
+const template = require('./src/template');
+
+exports.prepare = async () => {
+  await template.prepare();
 };
+exports.templateValidator = template.validator;
