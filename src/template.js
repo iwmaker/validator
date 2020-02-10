@@ -14,7 +14,7 @@ let cabinxCompsName = null;
  * 准备步骤，在工具启动时调用
  * 克隆 cabinx 仓库，获取组件白名单
  */
-exports.prepare = async () => {
+exports.prepare = () => {
   const download = require('download-git-repo');
   const home = require('user-home');
   const save = path.resolve(home, '.cabin/cabinx');
@@ -33,7 +33,7 @@ exports.prepare = async () => {
           showError('下载 CabinX 仓库失败');
           return reject(err);
         }
-        resolve(cabinxCompsName = JSON.parse(
+        return resolve(cabinxCompsName = JSON.parse(
           fs.readFileSync(
             path.resolve(save, './comps-name.json'),
             { encoding: 'utf8' }
@@ -42,6 +42,8 @@ exports.prepare = async () => {
       });
     });
   }
+
+  return Promise.reject('正在/已载 CabinX 仓库');
 };
 
 
@@ -68,8 +70,7 @@ exports.validator = (template, cpath) => {
     };
   }
 
-  const { compile } = require('vue-template-compiler');
-  const { ast } = compile(template);
+  const ast = require('./lib/parser').parse(template, {});
   const cusCompsName = getFolders(cpath);
   const msgs = [];
   const queue = [ast];

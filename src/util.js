@@ -1,3 +1,3 @@
 exports.showError = m => {
-  console.error(`[Validator]: ${ m }`);
+  console.error(`\n[Validator]: ${ m }`);
 };
