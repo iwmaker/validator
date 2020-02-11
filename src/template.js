@@ -10,39 +10,26 @@ const exists = fs.existsSync;
 const prepare = (() => {
   let needDownload = true;
   return () => {
-    const download = require('download-git-repo');
-    const home = require('user-home');
-    const save = path.resolve(home, '.cabin/cabinx');
-    const site = 'gitlab.dmall.com:kayak-project/cabinxcomps';
-    const toMiddleLine = (s) => {
-      const t = s.replace(/[A-Z]/g, s => `-${ s.toLowerCase() }`);
-      return t.indexOf('-') === 0 ? t.slice(1) : t;
-    };
-
     if (needDownload) {
       needDownload = false;
-      return new Promise((resolve, reject) => {
-        exists(save) && require('rimraf').sync(save);
-        download(site, save, { clone: true }, err => {
-          if (err) {
-            needDownload = true;
-            showError('下载 CabinX 仓库失败');
-            return reject(err);
-          }
-          return resolve(cabinxCompsName = JSON.parse(
-            fs.readFileSync(
-              path.resolve(save, './comps-name.json'),
-              { encoding: 'utf8' }
-            )
-          ).map(toMiddleLine));
-        });
+      return require('axios').get(
+        'http://api.github.com/repos/iwmaker/validator/contents/src/lib/comps-name.json'
+      ).then(({ data }) => {
+        const raw = Buffer.from(data.content, data.encoding).toString('utf8');
+        return Promise.resolve(
+          cabinxCompsName = JSON.parse(raw)
+        );
+      }).catch(err => {
+        needDownload = true;
+        showError('下载 CabinX 组件白名单失败');
+        return Promise.reject(err);
       });
     } else if (cabinxCompsName) {
       return Promise.resolve(cabinxCompsName);
     } else {
-      return Promise.reject('正在下载 CabinX 仓库');
+      return Promise.reject('正在下载 CabinX 组件白名单');
     }
-  }
+  };
 })();
 
 const getFolders = (p) => {

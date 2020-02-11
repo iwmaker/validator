@@ -8,8 +8,7 @@
   },
   "author": "Dmall FE",
   "dependencies": {
-    "download-git-repo": "^3.0.2",
-    "rm": "^0.1.8",
-    "user-home": "^2.0.0"
+    "axios": "^0.19.2",
+    "he": "^1.2.0"
   }
 }

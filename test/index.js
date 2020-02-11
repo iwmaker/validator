@@ -1,6 +1,9 @@
 const path = require('path');
 const validator = require('../');
 
+/**
+ * 模板检测示例
+ */
 let max = 5;
 const intervalId = setInterval(() => {
   --max <= 0 && clearInterval(intervalId);
