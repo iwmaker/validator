@@ -23,8 +23,29 @@ const intervalId = setInterval(() => {
     </x-form>
   `, path.resolve(__dirname, './comps'))
   .then(res => {
-    console.log(`模板检测成功\n${ JSON.stringify(res) }\n`);
+    console.log(``);
+    console.log(`模板检测成功，${ res.isVaild ? '无' : '有' }错误`);
+    console.log(`错误列表信息：${ JSON.stringify(res.msgs) }`);
   }, err => {
-    console.log(`模板检测失败\n${ err }\n`);
+    console.log(``);
+    console.log(`模板检测中出现错误：${ err }`);
   });
 }, 1000);
+
+
+/**
+ * JS 检测示例
+ */
+validator.jsValidator(`
+  let a = 1;
+  let b = () => {};
+  let { c } = window;
+  var d = 1;
+`).then(res => {
+  console.log(``);
+  console.log(`JS 检测成功，${ res.isVaild ? '无' : '有' }错误`);
+  console.log(`错误列表信息：${ JSON.stringify(res.msgs) }`);
+}, err => {
+  console.log(``);
+  console.log(`JS 检测中出现错误：${ err }`);
+});

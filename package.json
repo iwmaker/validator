@@ -9,6 +9,7 @@
   "author": "Dmall FE",
   "dependencies": {
     "axios": "^0.19.2",
+    "eslint": "^6.8.0",
     "he": "^1.2.0"
   }
 }
