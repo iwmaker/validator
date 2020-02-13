@@ -1,6 +1,6 @@
 {
   "name": "@cabin/validator",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Cabin validator in compilation phase.",
   "main": "index.js",
   "scripts": {
