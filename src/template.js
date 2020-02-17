@@ -1,47 +1,27 @@
 const fs = require('fs');
+const exists = fs.existsSync;
 const path = require('path');
-
-let cabinxCompsName = null;
 const {
   showError
 } = require('./util');
-const exists = fs.existsSync;
 
-const prepare = (() => {
-  let needDownload = true;
-  return () => {
-    if (needDownload) {
-      needDownload = false;
-      return require('axios').get(
-        'http://api.github.com/repos/iwmaker/validator/contents/src/lib/comps-name.json'
-      ).then(({ data }) => {
-        const raw = Buffer.from(data.content, data.encoding).toString('utf8');
-        return Promise.resolve(
-          cabinxCompsName = JSON.parse(raw)
-        );
-      }).catch(err => {
-        needDownload = true;
-        showError('下载 CabinX 组件白名单失败');
-        return Promise.reject(err);
-      });
-    } else if (cabinxCompsName) {
-      return Promise.resolve(cabinxCompsName);
-    } else {
-      return Promise.reject('正在下载 CabinX 组件白名单');
-    }
-  };
+// 将值设置成 Promise ，已达到类似串行的作用
+const pCabinxCompsName = (() => {
+  const axios = require('axios');
+  const url = 'http://api.github.com/repos/iwmaker/validator/contents/src/lib/comps-name.json';
+  return axios.get(url).then(({ data }) => {
+    const raw = Buffer.from(data.content, data.encoding).toString('utf8');
+    return Promise.resolve(JSON.parse(raw));
+  }).catch(err => {
+    showError('下载 CabinX 组件白名单失败');
+    return Promise.reject(err);
+  });
 })();
 
 const getFolders = (p) => {
   return fs.readdirSync(p).filter(d => {
     return fs.statSync(path.resolve(p, d)).isDirectory();
   });
-};
-
-const isCabinxCompName = (s) => {
-  return cabinxCompsName
-    ? cabinxCompsName.includes(s)
-    : s.indexOf('x-') === 0;
 };
 
 /**
@@ -56,9 +36,12 @@ exports.validator = (template, cpath) => {
     };
   }
 
-  return prepare().then(() => {
-    const ast = require('./lib/parser').parse(template, {});
-    const cusCompsName = getFolders(cpath);
+  // 为第一次，未取到 cabinxCompsName 前的过程加速
+  const { parse } = require('./lib/parser');
+  const ast = parse(template, {});
+  const cusCompsName = getFolders(cpath);
+
+  return pCabinxCompsName.then((cabinxCompsName) => {
     const msgs = [];
     const queue = [ast];
     
@@ -68,7 +51,7 @@ exports.validator = (template, cpath) => {
       const children = cur.children;
       if (tag
         && !cusCompsName.includes(tag)
-        && !isCabinxCompName(tag)) {
+        && !cabinxCompsName.includes(tag)) {
         msgs.push(`非法标签 ${ tag }`);
       }
       children
