@@ -8,10 +8,9 @@ const {
 // 将值设置成 Promise ，已达到类似串行的作用
 const pCabinxCompsName = (() => {
   const axios = require('axios');
-  const url = 'http://api.github.com/repos/iwmaker/validator/contents/src/lib/comps-name.json';
+  const url = 'http://static.dmall.com/kayak-project/cabinx/dist/cabinx/comps/names.json';
   return axios.get(url).then(({ data }) => {
-    const raw = Buffer.from(data.content, data.encoding).toString('utf8');
-    return Promise.resolve(JSON.parse(raw));
+    return Promise.resolve(data);
   }).catch(err => {
     showError('下载 CabinX 组件白名单失败');
     return Promise.reject(err);
