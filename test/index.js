@@ -37,10 +37,23 @@ const intervalId = setInterval(() => {
  * JS 检测示例
  */
 validator.jsValidator(`
+  import p from 'p';
   let a = 1;
-  let b = () => {};
+  const b = () => {};
   let { c } = window;
   var d = 1;
+  var d = new Date();
+  var d = new Map();
+  var f = function() {
+    var g = 1;
+    return function() {
+      g = 3;
+      h = 3;
+    };
+  };
+  define('aaaa', function() {});
+  require('aaa');
+  export default d;
 `).then(res => {
   console.log(``);
   console.log(`JS 检测成功，${ res.isVaild ? '无' : '有' }错误`);
