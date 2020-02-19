@@ -1,15 +1,24 @@
 {
   "name": "@cabin/validator",
-  "version": "1.0.6",
+  "version": "1.1.0",
   "description": "Cabin validator in compilation phase.",
   "main": "index.js",
-  "scripts": {
-    "test": "node test"
-  },
   "author": "Dmall FE",
+  "files": [
+    "dist",
+    "test"
+  ],
   "dependencies": {
     "axios": "^0.19.2",
     "eslint": "^6.8.0",
     "he": "^1.2.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.8.4",
+    "@babel/preset-env": "^7.8.4",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-uglify": "^3.0.2",
+    "rimraf": "^3.0.2"
   }
 }

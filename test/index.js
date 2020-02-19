@@ -1,5 +1,5 @@
 const path = require('path');
-const validator = require('../');
+const { templateValidator, jsValidator } = require('../');
 
 /**
  * 模板检测示例
@@ -7,7 +7,7 @@ const validator = require('../');
 let max = 5;
 const intervalId = setInterval(() => {
   --max <= 0 && clearInterval(intervalId);
-  validator.templateValidator(`
+  templateValidator(`
     <x-form>
       HI
       <x-input />
@@ -36,7 +36,7 @@ const intervalId = setInterval(() => {
 /**
  * JS 检测示例
  */
-validator.jsValidator(`
+jsValidator(`
   import p from 'p';
   let a = 1;
   const b = () => {};
