@@ -21,20 +21,33 @@ const config = {
   }
 };
 
+const pCabinxVarsName = (() => {
+  const axios = require('axios');
+  const url = 'http://static.dmall.com/kayak-project/cabinx/dist/cabinx/comps/vars.json';
+  return axios.get(url).then(({ data }) => {
+    config.globals = config.globals || {};
+    data.forEach(k => config.globals[k] = 'readonly');
+    return Promise.resolve(data);
+  }).catch(err => {
+    showError('下载 CabinX 全局变量白名单失败');
+    return Promise.reject(err);
+  });
+})();
+
 /**
  * @params {String} code - 字符串
  */
 exports.validator = (code) => {
-  return new Promise((resolve, reject) => {
+  return pCabinxVarsName.then(() => {
     let msgs = null;
     try {
       msgs = linter.verify(code, config);
     } catch (e) {
       msgs = [e];
     }
-    return resolve({
+    return {
       isVaild: msgs.length === 0,
       msgs: msgs.map(m => `At line ${ m.line }. ${ m.message }`)
-    });
+    };
   });
 };
